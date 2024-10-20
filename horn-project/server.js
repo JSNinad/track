@@ -7,23 +7,26 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: 'https://vehiceltracking.vercel.app/', // allow your frontend to connect
+    origin: 'https://vehiceltracking.vercel.app', // Allow your frontend to connect
     methods: ['GET', 'POST'],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 
+// Middleware to enable CORS for your frontend
 app.use(cors({
-  origin: 'https://vehiceltracking.vercel.app/', // allow your frontend
-  credentials: true
+  origin: 'https://vehiceltracking.vercel.app', // Allow your frontend
+  credentials: true,
 }));
 
+// Simple route for testing the backend
 app.get('/', (req, res) => {
   res.send('Horn Notification Backend');
 });
 
+// Handle socket connections
 io.on('connection', (socket) => {
-  console.log('User connected', socket.id);
+  console.log('User connected:', socket.id);
 
   // Listen for the horn event
   socket.on('horn', () => {
@@ -31,11 +34,14 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('notifyHorn');
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('User disconnected', socket.id);
+    console.log('User disconnected:', socket.id);
   });
 });
 
+// Start the server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
