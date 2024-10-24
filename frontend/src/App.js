@@ -232,12 +232,11 @@
 
 // export default App;
 // ---------
-
-
+// App.js
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-// Connect to deployed server URL
+// Connect to the deployed server URL
 const socket = io('https://track-1-y9sd.onrender.com'); // Backend URL
 
 function App() {
@@ -252,7 +251,9 @@ function App() {
       setTimeout(() => setNotification(false), 3000); // Reset after 3 seconds
     });
 
-    return () => socket.off('notifyHorn');
+    return () => {
+      socket.off('notifyHorn'); // Cleanup listener on component unmount
+    };
   }, []);
 
   const handleHornClick = () => {
